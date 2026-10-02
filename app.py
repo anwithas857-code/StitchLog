@@ -295,6 +295,6 @@ def uploaded_file(filename):
     from flask import send_from_directory
     return send_from_directory(UPLOAD_DIR, filename)
 
+ init_db()
 if __name__ == "__main__":
-    init_db()
     app.run(debug=True)
