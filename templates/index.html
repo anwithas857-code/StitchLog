@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div>
+    <h1>Your StitchLog</h1>
+    <p>Keep dress measurements, alterations and photos in one place.</p>
+  </div>
+  <a class="primary big" href="{{ url_for('add_dress') }}">+ Add New Dress</a>
+</section>
+
+<form class="search" method="get">
+  <input name="q" value="{{ q }}" placeholder="Search dresses, type or notes...">
+  <button class="secondary" type="submit">Search</button>
+</form>
+
+<div class="summary">{{ count }} saved dress{% if count != 1 %}es{% endif %}</div>
+
+{% if dresses %}
+<div class="grid">
+{% for d in dresses %}
+  <a class="dress-card" href="{{ url_for('dress_detail', dress_id=d['id']) }}">
+    {% if d['photo'] %}
+      <img src="{{ url_for('uploaded_file', filename=d['photo']) }}" alt="{{ d['dress_name'] }}">
+    {% else %}
+      <div class="photo-placeholder">👗</div>
+    {% endif %}
+    <div class="card-body">
+      <h2>{{ d['dress_name'] }}</h2>
+      <p>{{ d['dress_type'] or 'Dress' }}</p>
+      <small>Updated {{ d['updated_at'][:10] }}</small>
+    </div>
+  </a>
+{% endfor %}
+</div>
+{% else %}
+<div class="empty">
+  <div class="empty-icon">🧵</div>
+  <h2>No dresses saved yet</h2>
+  <p>Add your first dress and start your digital measurement book.</p>
+  <a class="primary" href="{{ url_for('add_dress') }}">Add First Dress</a>
+</div>
+{% endif %}
+{% endblock %}

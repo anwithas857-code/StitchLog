@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <a class="back" href="{{ url_for('index') }}">← All Dresses</a>
+    <h1>{{ dress['dress_name'] }}</h1>
+    <p class="muted">{{ dress['dress_type'] or 'Dress' }} · {{ dress['updated_at'][:10] }}</p>
+  </div>
+</div>
+
+{% if dress['photo'] %}
+<img class="detail-photo" src="{{ url_for('uploaded_file', filename=dress['photo']) }}" alt="{{ dress['dress_name'] }}">
+{% endif %}
+
+<div class="actions">
+  <a class="primary" href="{{ url_for('edit_dress', dress_id=dress['id']) }}">Edit</a>
+  <form method="post" action="{{ url_for('copy_dress', dress_id=dress['id']) }}"><button class="secondary" type="submit">Copy Measurements</button></form>
+  <form method="post" action="{{ url_for('delete_dress', dress_id=dress['id']) }}" onsubmit="return confirm('Delete this dress? This cannot be undone.')"><button class="danger" type="submit">Delete</button></form>
+</div>
+
+<section class="section">
+<h2>Measurements</h2>
+{% if measurements %}
+<div class="measure-list">
+{% for m in measurements %}
+  <div><span>{{ m['name'] }}</span><strong>{{ m['value'] }} {{ m['unit'] }}</strong></div>
+{% endfor %}
+</div>
+{% else %}<p class="muted">No measurements added.</p>{% endif %}
+</section>
+
+<section class="section">
+<div class="section-title"><h2>Alterations</h2></div>
+{% if alterations %}
+{% for a in alterations %}
+<div class="alteration-view">
+  <div>
+    <strong>{{ a['description'] }}</strong>
+    {% if a['amount'] %}<span>{{ a['amount'] }} {{ a['unit'] }}</span>{% endif %}
+  </div>
+  <button type="button" class="status {% if a['status']=='Completed' %}done{% endif %}" data-toggle="{{ a['id'] }}">{{ a['status'] }}</button>
+</div>
+{% endfor %}
+{% else %}<p class="muted">No alterations added.</p>{% endif %}
+</section>
+
+{% if dress['notes'] %}
+<section class="section">
+<h2>Stitching notes</h2>
+<p class="notes">{{ dress['notes'] }}</p>
+</section>
+{% endif %}
+{% endblock %}

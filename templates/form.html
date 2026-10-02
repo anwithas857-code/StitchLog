@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <a class="back" href="{{ url_for('index') }}">← Back</a>
+    <h1>{{ 'Edit Dress' if dress else 'Add New Dress' }}</h1>
+  </div>
+</div>
+
+<form class="form" method="post" enctype="multipart/form-data">
+<section class="section">
+  <h2>Dress details</h2>
+  <label>Dress name *</label>
+  <input name="dress_name" required value="{{ dress['dress_name'] if dress else '' }}" placeholder="e.g. Pink Blouse">
+
+  <label>Dress type</label>
+  <select name="dress_type">
+    <option value="">Select type (optional)</option>
+    {% for t in ['Blouse','Kurti','Anarkali','Churidar','Salwar','Palazzo','Pant','Skirt','Lehenga','Gown','Other'] %}
+      <option {% if dress and dress['dress_type']==t %}selected{% endif %}>{{ t }}</option>
+    {% endfor %}
+  </select>
+
+  <label>Measurement unit</label>
+  <select name="unit" id="unit">
+    <option value="in" {% if not dress or dress['unit']=='in' %}selected{% endif %}>Inches</option>
+    <option value="cm" {% if dress and dress['unit']=='cm' %}selected{% endif %}>Centimeters</option>
+  </select>
+</section>
+
+<section class="section">
+  <div class="section-title">
+    <div><h2>Measurements</h2><p>Add only what you need.</p></div>
+    <button type="button" class="secondary" id="addMeasurement">+ Add Measurement</button>
+  </div>
+  <div id="measurements">
+    {% if measurements %}
+      {% for m in measurements %}
+      <div class="row measurement-row">
+        <input name="measurement_name" value="{{ m['name'] }}" placeholder="Measurement name">
+        <input name="measurement_value" value="{{ m['value'] }}" placeholder="Value" inputmode="decimal">
+        <select name="measurement_unit">
+          <option value="in" {% if m['unit']=='in' %}selected{% endif %}>in</option>
+          <option value="cm" {% if m['unit']=='cm' %}selected{% endif %}>cm</option>
+        </select>
+        <button type="button" class="remove" aria-label="Remove measurement">×</button>
+      </div>
+      {% endfor %}
+    {% else %}
+      {% for name in ['Length','Shoulder','Neck','Bust','Waist','Hip','Armhole','Sleeve Length','Sleeve Opening'] %}
+      <div class="row measurement-row">
+        <input name="measurement_name" value="{{ name }}" placeholder="Measurement name">
+        <input name="measurement_value" placeholder="Value" inputmode="decimal">
+        <select name="measurement_unit">
+          <option value="in">in</option><option value="cm">cm</option>
+        </select>
+        <button type="button" class="remove" aria-label="Remove measurement">×</button>
+      </div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-title">
+    <div><h2>Alterations</h2><p>Record changes or finishing work.</p></div>
+    <button type="button" class="secondary" id="addAlteration">+ Add Alteration</button>
+  </div>
+  <div id="alterations">
+    {% for a in alterations %}
+    <div class="alteration-card">
+      <input name="alteration_description" value="{{ a['description'] }}" placeholder="e.g. Reduce sleeve length">
+      <div class="row">
+        <input name="alteration_amount" value="{{ a['amount'] }}" placeholder="Amount">
+        <select name="alteration_unit">
+          <option value="">unit</option><option value="in" {% if a['unit']=='in' %}selected{% endif %}>in</option><option value="cm" {% if a['unit']=='cm' %}selected{% endif %}>cm</option>
+        </select>
+        <select name="alteration_status">
+          <option {% if a['status']=='Pending' %}selected{% endif %}>Pending</option>
+          <option {% if a['status']=='Completed' %}selected{% endif %}>Completed</option>
+        </select>
+        <button type="button" class="remove" aria-label="Remove alteration">×</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Photo</h2>
+  {% if dress and dress['photo'] %}
+    <img class="form-photo" src="{{ url_for('uploaded_file', filename=dress['photo']) }}" alt="Current dress photo">
+    <p class="hint">Choose a new photo only if you want to replace it.</p>
+  {% endif %}
+  <input type="file" name="photo" accept="image/*" capture="environment">
+</section>
+
+<section class="section">
+  <h2>Stitching notes</h2>
+  <textarea name="notes" rows="5" placeholder="Anything to remember about this dress...">{{ dress['notes'] if dress else '' }}</textarea>
+</section>
+
+<button class="primary save" type="submit">{{ 'UPDATE DRESS' if dress else 'SAVE DRESS' }}</button>
+</form>
+{% endblock %}
