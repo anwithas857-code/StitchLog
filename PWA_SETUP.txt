@@ -1,0 +1,39 @@
+STITCHLOG — PHONE INSTALLABLE VERSION
+=============================================
+
+What changed:
+- Added a web app manifest
+- Added 192x192 and 512x512 app icons
+- Added a service worker for the app shell
+- Added an Install App button when the browser supports it
+- Added mobile/PWA metadata
+
+IMPORTANT:
+The app is still a Flask + SQLite app. Installing it as a PWA does NOT automatically move the database to the phone.
+For your mom to use it from her own phone, the Flask app must be deployed to a public HTTPS address.
+The server-side SQLite database and uploaded photos will then live on that server.
+
+LOCAL TEST:
+1. Open Command Prompt.
+2. Go to the project folder.
+3. Activate your virtual environment:
+   .venv\Scripts\activate
+4. Install requirements:
+   pip install -r requirements.txt
+5. Start:
+   python app.py
+6. Open:
+   http://127.0.0.1:5000
+
+For local PWA testing, Chrome can recognize localhost/127.0.0.1 as a secure development origin.
+
+PHONE:
+After the app is deployed on HTTPS:
+1. Open the HTTPS app URL in Chrome on your mom's Android phone.
+2. Tap "Install App" if it appears, or use Chrome's menu and choose "Install app"/"Add to Home screen".
+3. A StitchLog icon will appear on the phone.
+4. Open it from the icon like an app.
+
+NEXT STEP:
+Deploy this Flask project to a public HTTPS host. Do not try to use
+http://127.0.0.1:5000 from your mom's phone — that address points to the phone itself, not your computer.
